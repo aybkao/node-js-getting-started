@@ -17,6 +17,10 @@ app.get('/', function(request, response) {
 
 app.get('/find', function(request, response) {
   name.find({}, function(err, data) {
+    if (err) {
+      console.log(err);
+      return;
+    }
   response.send(data);
   });
   //response.send("find success!");
