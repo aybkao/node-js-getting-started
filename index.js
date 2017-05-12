@@ -1,15 +1,14 @@
-var express = require('express');
+var app = require('express')();
 var cool = require('cool-ascii-faces');
 var path = require('path');
-var User = require('./database/index.js');
-var app = express();
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
+var User = require('./database/index.js');
 var configAuth = require('./auth.js')
 
-///// passport Google
 
-
+///// passport Google Strategy
 
 passport.use(new GoogleStrategy({
     clientID: configAuth.googleAuth.clientID,
