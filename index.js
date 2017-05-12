@@ -85,55 +85,9 @@ app.get('/profile', function (req, res) {
 });
 
 
-////////// Local Strategy
+////////// Local Strategy ???
 
-passport.use(new LocalStrategy({
-    clientID: configAuth.googleAuth.clientID,
-    clientSecret: configAuth.googleAuth.clientSecret,
-    callbackURL: configAuth.googleAuth.callbackURL
-  },
-  function(accessToken, refreshToken, profile, done) {
-    console.log('accessToken', accessToken);
-    console.log('refreshToken', refreshToken);
-    console.log('profile', profile);
-    console.log('id', profile.id);
-    console.log('fn', profile.name.givenName);
-    console.log('ln', profile.name.familyName);
 
-    // user = new User({
-    //   id: profile.id, 
-    //   firstName: profile.name.givenName, 
-    //   lastName: profile.name.familyName
-    // });
-    
-    // user.save(function(err, user){
-    //   if (err) {
-    //     console.log("err", err)
-    //   }
-    // });
-
-    User.find({'id': profile.id}, function(err, data) {
-      if (err) {
-        return done(err);
-      }
-      //if no data create new user with values from Google
-      if (data.length === 0) {
-        user = new User({
-          id: profile.id, 
-          firstName: profile.name.givenName, 
-          lastName: profile.name.familyName
-        });
-        user.save(function(err, user) {
-          if (err) console.log(err);
-          return done(err, user);
-        });
-      } else {
-        //found user. Return
-        return done(err, data);
-      }
-    });
-  }
-));
 
 
 
