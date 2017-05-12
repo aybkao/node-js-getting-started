@@ -15,4 +15,3 @@ docker-compose.yml
 database/db
 
 # authentication 
-auth.js
