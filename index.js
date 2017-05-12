@@ -134,7 +134,6 @@ app.get('/find', function(request, response) {
     }
   response.send(data);
   });
-  //response.send("find success!");
 })
 
 app.get('/cool', function(request, response) {
