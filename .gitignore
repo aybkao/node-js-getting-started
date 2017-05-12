@@ -13,3 +13,6 @@ docker-compose.yml
 
 # Database stuff
 database/db
+
+# authentication 
+auth.js

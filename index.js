@@ -1,19 +1,128 @@
 var express = require('express');
 var cool = require('cool-ascii-faces');
-var name = require('./database/index.js')
+var path = require('path');
+var User = require('./database/index.js');
 var app = express();
+var passport = require('passport');
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var configAuth = require('./auth.js')
+
+///// passport Google
+
+
+
+passport.use(new GoogleStrategy({
+    clientID: configAuth.googleAuth.clientID,
+    clientSecret: configAuth.googleAuth.clientSecret,
+    callbackURL: configAuth.googleAuth.callbackURL
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log('accessToken', accessToken);
+    console.log('refreshToken', refreshToken);
+    console.log('profile', profile);
+    console.log('id', profile.id);
+    console.log('fn', profile.name.givenName);
+    console.log('ln', profile.name.familyName);
+
+    // user = new User({
+    //   id: profile.id, 
+    //   firstName: profile.name.givenName, 
+    //   lastName: profile.name.familyName
+    // });
+    
+    // user.save(function(err, user){
+    //   if (err) {
+    //     console.log("err", err)
+    //   }
+    // });
+
+    User.find({'id': profile.id}, function(err, data) {
+      if (err) {
+        return done(err);
+      }
+      //if no data create new user with values from Google
+      if (data.length === 0) {
+        user = new User({
+          id: profile.id, 
+          firstName: profile.name.givenName, 
+          lastName: profile.name.familyName
+        });
+        user.save(function(err, user) {
+          if (err) console.log(err);
+          return done(err, user);
+        });
+      } else {
+        //found user. Return
+        return done(err, data);
+      }
+    });
+  }
+));
+
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/auth/google', passport.authenticate('google', 
+  { session: false, scope: ['profile'] }));
+
+app.get('/auth/google/callback', 
+  passport.authenticate('google', {failureRedirect: '/'}), function(req, res) {
+    res.redirect('/profile')
+  });
+
+app.get('/profile', function (req, res) {
+  console.log('we got to the profile page');
+  res.send('AUTHENTICATION OK!');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
 
-// views is directory for all template files
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+//views is directory for all template files
+// app.set('views', __dirname + '/views');
+// app.set('view engine', 'ejs');
+
+// app.get('/', function(request, response) {
+//   response.render('pages/index');
+// });
 
 app.get('/', function(request, response) {
-  response.render('pages/index');
+  response.sendFile(path.join(__dirname + '/views/pages/index.html'));
 });
+
+app.get('/index_submit*', function(request, response) {
+  console.log("somesubmission of whatever");
+  response.send("submitted my user info")
+})
 
 app.get('/find', function(request, response) {
   name.find({}, function(err, data) {

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-//mongoose.connect('mongodb://localhost/test');
+//mongoose.connect('mongodb://localhost/test1');
 mongoose.connect('mongodb://test1:test2@ds133321.mlab.com:33321/goodstuff');
 var db = mongoose.connection;
 
@@ -21,12 +21,12 @@ console.log("SCHEMA", schemaObj);
 var nameSchema = mongoose.Schema(schemaObj);
 var Name = mongoose.model('name', nameSchema);  
 
-var someName = new Name({id: 1, firstName: 'John', lastName:'Wall'})
-someName.save(function(err, someName) {
-  if (err) {
-    console.log(err);
-    return; 
-  }
-});
+// var someName = new Name({id: 2, firstName: 'Kobe', lastName:'Bryant'})
+// someName.save(function(err, someName) {
+//   if (err) {
+//     console.log(err);
+//     return; 
+//   }
+// });
 
 module.exports = Name;
