@@ -125,7 +125,7 @@ app.get('/index_submit*', function(request, response) {
 })
 
 app.get('/find', function(request, response) {
-  name.find({}, function(err, data) {
+  User.find({}, function(err, data) {
     if (err) {
       console.log(err);
       return;
